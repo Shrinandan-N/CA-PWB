@@ -177,12 +177,13 @@ class SignUpPage extends State<DropDown>{
     if(_formstate.validate()){
       _formstate.save();
       try {
-        AuthResult result = (await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: _email, password: _password));
-        FirebaseUser usr = result.user;
-        usr.sendEmailVerification();
+        AuthResult result = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email, password: _password);
+        FirebaseUser user = result.user;
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+
+
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentHomePage(user: user)));
       }catch(e){
         print(e.message);
       }

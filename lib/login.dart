@@ -6,6 +6,7 @@ import 'package:communicationacademy/app_card.dart';
 import 'package:communicationacademy/signup.dart';
 import 'package:communicationacademy/home.dart';
 import 'package:communicationacademy/studentHome.dart';
+import 'package:communicationacademy/studentHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget{
@@ -131,9 +132,9 @@ class LoginPage extends StatelessWidget{
       _formstate.save();
       try {
         AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-        FirebaseUser usr = result.user;
+        FirebaseUser user = result.user;
         print("logged in!");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => studentHome()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentHomePage(user: user)));
       }catch(e){
         print(e.message);
         AlertDialog dialog = new AlertDialog(

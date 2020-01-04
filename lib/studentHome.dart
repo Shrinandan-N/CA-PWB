@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class studentHome extends StatefulWidget {
-  @override
-  _studentHomeState createState() => _studentHomeState();
-}
 
-class _studentHomeState extends State<studentHome> {
+class StudentHomePage extends StatelessWidget {
+  const StudentHomePage({Key key, @required this.user}) : super(key: key);
+  final FirebaseUser user;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome"),
+        title: Text("Home ${user.email}"),
         automaticallyImplyLeading: false,
       ),
+
     );
   }
 }
