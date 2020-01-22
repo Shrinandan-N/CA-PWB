@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(DropDown());
+
+/// This Widget is the main application widget.
+class DropDown extends StatefulWidget {
+  DropDown() : super();
+
+  final String title = "Courses List";
+
+  @override
+  DropDownState createState() => DropDownState();
+
+}
+
+class Company {
+  int id;
+  String name;
+
+  Company(this.id, this.name);
+
+  static List<Company> getCompanies() {
+    return <Company>[
+      Company(1, 'Course One'),
+      Company(2, 'Course Two'),
+      Company(3, 'Course Three'),
+      Company(4, 'Course Four'),
+      Company(5, 'Course Five'),
+      Company(6, 'Course Six'),
+    ];
+  }
+}
+
+class DropDownState extends State<DropDown> {
+
+  List<Company> _companies = Company.getCompanies();
+  List<DropdownMenuItem<Company>> _dropdownMenuItems;
+  Company _selectedCompany;
+
+  @override
+  void initState() {
+    _dropdownMenuItems = buildDropDownMenuItems(_companies);
+    _selectedCompany = _dropdownMenuItems[0].value;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<Company>> buildDropDownMenuItems(List companies){
+    List<DropdownMenuItem<Company>> items = List();
+    for(Company company in companies){
+      items.add(
+        DropdownMenuItem(
+          value: company,
+          child: Text(company.name, style: TextStyle(fontSize: 30)),
+        ), //DropdownMenuItem
+      );
+    }
+    return items;
+  }
+
+  onChangeDropdownItem(Company selectedCompany){
+    setState(() {
+      _selectedCompany = selectedCompany;
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: new Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50.0), // here the desired height
+          child: AppBar(
+            title: new Text("Courses", style: TextStyle(fontSize: 40), textAlign: TextAlign.center,),
+          )
+        ),
+        body: new Container(
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Select a course", style: TextStyle(fontSize: 30)),
+                SizedBox(height: 40.0,),
+                DropdownButton(
+                  value: _selectedCompany,
+                  items: _dropdownMenuItems,
+                  onChanged: onChangeDropdownItem,
+                ),
+                SizedBox(height: 40.0,),
+                Text('Selected: ${_selectedCompany.name}', style: TextStyle(fontSize: 30)),
+              ],
+            )
+          )
+        ),
+      ),
+    );
+  }
