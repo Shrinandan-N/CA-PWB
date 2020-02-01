@@ -22,13 +22,10 @@ class HomePage extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
 
-//            Image.asset(
-//                'assets/caLogo.jpg',
-//                height: 100,
-//                width: 100,
-//                color: Colors.white,
-//                colorBlendMode: BlendMode.darken
-//            ),
+            CircleAvatar(
+              backgroundImage: AssetImage("assets/commLogo.png"),
+              radius: 60,
+            ),
             FlatButton(
               padding: EdgeInsets.only(top: 50),
               textColor: Colors.black,

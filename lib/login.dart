@@ -1,4 +1,7 @@
 
+
+
+import 'package:communicationacademy/teacherHome.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:communicationacademy/card.dart';
@@ -8,6 +11,8 @@ import 'package:communicationacademy/home.dart';
 import 'package:communicationacademy/studentHome.dart';
 import 'package:communicationacademy/studentHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class LoginPage extends StatelessWidget{
 
@@ -22,7 +27,7 @@ class LoginPage extends StatelessWidget{
     // TODO: implement build
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Container(
+        body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
           child:Form(
             key: formkey,
@@ -125,18 +130,44 @@ class LoginPage extends StatelessWidget{
         )
     );
   }
+
+
   Future<void> signIn(context) async{
     final _formstate =  formkey.currentState;
+    final databaseReference = Firestore.instance;
 
     if(_formstate.validate()){
       _formstate.save();
       try {
+
         AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
         FirebaseUser user = result.user;
+
+        Firestore.instance
+            .collection('users')
+            .document(user.uid)
+            .get()
+            .then((DocumentSnapshot ds) {
+
+              print(ds.data['role'].toString());
+
+              if(ds.data['role'].toString() == "Teacher"){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherHomePage(user: user)));
+              }else{
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StudentHomePage(user: user, displayName: ds.data['name'].toString(),)));
+              }
+        });
+
+
         print("logged in!");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentHomePage(user: user)));
+
+
+
+
+//create a new method that returns role of current user that is referenced in this method to validate whether role matches "student" or "teacher"
+
       }catch(e){
-        print(e.message);
+        print(e);
         AlertDialog dialog = new AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
@@ -159,8 +190,36 @@ class LoginPage extends StatelessWidget{
 
         showDialog(context: context, child: dialog);
       }
+    }else{
+      print("User could not be logged in");
     }
 
   }
 
+
+
 }
+
+
+//        AsyncSnapshot asyncSnapshot =  await databaseReference.collection("users").document("user information").collection(user.uid).document();
+//        DocumentSnapshot ds = asyncSnapshot.data.documents["role"];
+//         StreamBuilder(
+//
+//          stream: Firestore.instance.collection("users").document("user information").collection(user.uid).snapshots(),
+//          builder: (BuildContext  context,AsyncSnapshot snapshot) {
+//            if (snapshot.hasData) {
+//              itemBuilder:
+//                  (context, index) {
+//                DocumentSnapshot ds = snapshot.data.documents[index];
+//                if(ds["role"] == "student"){
+//                  print("yes");
+//                }else{
+//                  print("no");
+//                }
+//              };
+//            }else{
+//              print("no");
+//            }
+//          }
+//
+//        );
